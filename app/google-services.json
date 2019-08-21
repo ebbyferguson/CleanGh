@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "760037491896",
+    "firebase_url": "https://clean-f60be.firebaseio.com",
+    "project_id": "clean-f60be",
+    "storage_bucket": "clean-f60be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760037491896:android:009cf8dad1af6035",
+        "android_client_info": {
+          "package_name": "com.ferguson.clean"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760037491896-146jkg8s9vqr5udnqrm9s6k8t632bjns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ferguson.clean",
+            "certificate_hash": "85f32336ceb79df670859fa22d058315bbb3c6bf"
+          }
+        },
+        {
+          "client_id": "760037491896-m6goru8qgpjnarl5l44hdhj2m7i62jog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSpkzx3zmxpUcDRte7zmyMMXSyueL8bQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760037491896-m6goru8qgpjnarl5l44hdhj2m7i62jog.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

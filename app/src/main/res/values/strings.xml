@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CleanGh</string>
+    <string name="short_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
+    <string name="google_maps_API_key">AIzaSyABlRNbBSmgDt9edkTVTxrEBsO7JjBWUik</string>
+    <string name="title_activity_maps">Map</string>
+
 </resources>
