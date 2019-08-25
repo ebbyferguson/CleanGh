@@ -32,7 +32,11 @@ import android.widget.Toast;
 import com.ferguson.clean.utils.ConnectivityHelper;
 import com.ferguson.clean.utils.FirebaseUtil;
 import com.ferguson.clean.utils.TimeAgo;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.FirebaseError;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
@@ -69,7 +73,7 @@ public class AddTrash extends AppCompatActivity {
     public static final String EXTRA_CIRCULAR_REVEAL_Y = "EXTRA_CIRCULAR_REVEAL_Y";
     View rootLayout;
     TrashObj trashObj;
-
+    GeoFire geoFire;
     private int revealX;
     private int revealY;
     private String bundleExtraLat;
@@ -90,6 +94,7 @@ public class AddTrash extends AppCompatActivity {
 
 
         final Intent intent = getIntent();
+
 
 
         if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
@@ -114,6 +119,8 @@ public class AddTrash extends AppCompatActivity {
         } else {
             rootLayout.setVisibility(View.VISIBLE);
         }
+
+
 
         txtLocation.setPaintFlags(txtLocation.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
@@ -169,15 +176,34 @@ public class AddTrash extends AppCompatActivity {
 //                long oldTime = Long.parseLong(oldT);
 //                String timeAgo = TimeAgo.timeAgo(oldTime);
 //                Log.i("Time Ago is :: ", timeAgo);
-//
+
 //                saveTrashLocation(String.valueOf(oldTime),"userId", bundleExtraLat, bundleExtraLong);
 
                 FirebaseDatabase fdb = FirebaseDatabase.getInstance();
                 DatabaseReference dbref = fdb.getReference();
 
-                //dbref.child("test").setValue("kdkdkddkdkd");
-                
-                dbref.child("trash").setValue(TrashObj.class);
+
+//                dbref.child("trash").setValue(TrashObj.class);
+                geoFire = new GeoFire(dbref.child("geofire"));
+                geoFire.setLocation("firebase-hq", new GeoLocation(Double.parseDouble(bundleExtraLat), Double.parseDouble(bundleExtraLong)), new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        if (error != null) {
+                            System.err.println("There was an error saving the location to GeoFire: " + error);
+                        } else {
+                            System.out.println("Location saved on server successfully!");
+                        }
+                    }
+
+//                    @Override
+//                    public void onComplete(String key, FirebaseError error) {
+//                        if (error != null) {
+//                            System.err.println("There was an error saving the location to GeoFire: " + error);
+//                        } else {
+//                            System.out.println("Location saved on server successfully!");
+//                        }
+//                    }
+                });
 
 
             }
@@ -379,8 +405,7 @@ public class AddTrash extends AppCompatActivity {
                 .check();
     }
 
-    public void saveTrashLocation(String timeStamp, String userId, String lat, String lng){
-
+    public void saveTrash(String timeStamp, String userId, String lat, String lng){
 //        trashObj.setUserId(userId);
 //        trashObj.setTimeStamp(timeStamp);
 //        trashObj.setImgUrl("something");
@@ -388,7 +413,6 @@ public class AddTrash extends AppCompatActivity {
 //        trashObj.setLatLocation(lat);
 //        trashObj.setTrashId("1TID");
 //        trashObj.setComment(txtComments.getText().toString());
-
     }
 
 

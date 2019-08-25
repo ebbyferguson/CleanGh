@@ -17,36 +17,46 @@
             android:layout_height="match_parent"
             android:background="@color/overlay_dark_70" />
 
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="60dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ug_logo"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center"
+        android:orientation="vertical"
         android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:tint="@color/icons"
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/ic_trash"/>
 
         <TextView
             android:id="@+id/txtAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="cursive"
-            android:text="Clean"
+            android:fontFamily="sans-serif-light"
+            android:text="Think Plastic"
             android:textColor="@color/icons"
-            android:textSize="52dp"
+            android:textSize="28dp"
             android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="A University of Ghana Project"
+            android:textColor="@color/icons"
+            android:textSize="12dp"/>
 
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="35dp"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="cursive"
-        android:textAlignment="center"
-        android:text="Help Keep Ghana Clean"
-        android:textColor="@color/icons"
-        android:textSize="18dp"/>
 
 </RelativeLayout>

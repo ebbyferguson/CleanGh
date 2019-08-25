@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ferguson.clean">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -20,10 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.ferguson.clean.TrashActivity"></activity>
-        <activity
-            android:name="com.ferguson.clean.Home"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -36,23 +34,32 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".Dashboard" />
+        <activity android:name=".game.StartingScreenActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".game.QuizActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".TrashActivity" />
         <activity
-            android:name="com.ferguson.clean.MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name="com.ferguson.clean.TrashList" />
+            android:name=".Home"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name="com.ferguson.clean.AddTrash"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps">
 
         </activity>
-        <activity android:name="com.ferguson.clean.Splash">
+        <activity android:name=".TrashList" />
+        <activity
+            android:name=".AddTrash"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.ferguson.clean.MainActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+
 public class Splash extends AppCompatActivity {
 
 //    private RelativeLayout relativeLayout;
@@ -47,7 +48,7 @@ public class Splash extends AppCompatActivity {
             @Override
             public void run() {
                 // This method will be executed once the timer is over
-                Intent i = new Intent(Splash.this, Home.class);
+                Intent i = new Intent(Splash.this, Dashboard.class);
                 Bundle b = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     b = ActivityOptions.makeScaleUpAnimation(txtAppName, 0, 0, txtAppName.getWidth(),

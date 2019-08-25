@@ -36,7 +36,7 @@ public class Home extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //Do something after 1000ms
+                //Do something after 500ms
                 enterReveal();
             }
         }, 500);
