@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">Think Plastic</string>
     <string name="short_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
-    <string name="google_maps_API_key2">AIzaSyABlRNbBSmgDt9edkTVTxrEBsO7JjBWUik</string>
-    <string name="google_maps_API_key">AIzaSyAjdEA2WpnK_D6epBVBbIbOrsYM9MhwWsY</string>
-
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_maps2">Map</string>
 
     <!--Fetch Address-->
     <string name="no_geocoder_available">No geocoder available</string>
@@ -18,5 +14,8 @@
     <string name="no_location_data_provided">No location data provided</string>
     <string name="service_not_available">Sorry, the service is not available</string>
     <string name="invalid_lat_long_used">Invalid latitude or longitude used</string>
+
+    <string name="need_location_permission_message">You need to enable location permissions first</string>
+    <string name="location_permissions_granted_message">Location Permissions Granted</string>
 
 </resources>

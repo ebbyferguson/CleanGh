@@ -1,5 +1,6 @@
 package com.ferguson.clean;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
@@ -13,16 +14,39 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.ferguson.clean.Objects.TrashObj;
 import com.ferguson.clean.utils.FirebaseUtil;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Home extends AppCompatActivity {
 
+    private static final String TAG = "All Trash locations";
     private FloatingActionButton fab;
     private RecyclerView rv;
+    private LinearLayout lytNoItem;
+    private TrashAdapter mAdapter;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference collRef = db.collection("trashes");
+    String firebaseUid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +54,8 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         initComponents();
 
-        FirebaseUtil.openFbReference("trashPoints", this);
+        final Intent intent = getIntent();
+        firebaseUid = intent.getStringExtra("FIREBASE_UID");
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -40,6 +65,14 @@ public class Home extends AppCompatActivity {
                 enterReveal();
             }
         }, 500);
+
+        /*
+        * Check if there's data(trashes) in the FireStore
+        * then display the list of trashes in a recycler
+        * else display no item UI
+        * */
+
+        setUpRecyclerView();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +92,7 @@ public class Home extends AppCompatActivity {
     private void initComponents(){
         fab = (FloatingActionButton) findViewById(R.id.fab_add);
         rv = (RecyclerView) findViewById(R.id.recycler_view);
+        lytNoItem = (LinearLayout) findViewById(R.id.lyt_no_item);
     }
 
     @SuppressLint("RestrictedApi")
@@ -96,24 +130,41 @@ public class Home extends AppCompatActivity {
         Intent intent = new Intent(this, AddTrash.class);
         intent.putExtra(AddTrash.EXTRA_CIRCULAR_REVEAL_X, revealX);
         intent.putExtra(AddTrash.EXTRA_CIRCULAR_REVEAL_Y, revealY);
+        intent.putExtra("FIREBASE_UID",firebaseUid);
 
         ActivityCompat.startActivity(this, intent, options.toBundle());
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        FirebaseUtil.dettachListener();
+    public void setUpRecyclerView(){
+        Query query = collRef.orderBy("time_stamp", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<TrashObj> options = new FirestoreRecyclerOptions.Builder<TrashObj>()
+                .setQuery(query, TrashObj.class)
+                .build();
+
+        mAdapter = new TrashAdapter(options);
+
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setAdapter(mAdapter);
+
+        rv.setVisibility(View.VISIBLE);
+        lytNoItem.setVisibility(View.GONE);
+
     }
 
     @Override
-    protected void onResume() {
-        final TrashAdapter adapter = new TrashAdapter(this);
-        rv.setAdapter(adapter);
-        @SuppressLint("WrongConstant") LinearLayoutManager dealsLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rv.addItemDecoration(new DividerItemDecoration(rv.getContext(), DividerItemDecoration.VERTICAL));
-        rv.setLayoutManager(dealsLayoutManager);
-        super.onResume();
-        FirebaseUtil.attachListener();
+    protected void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
     }
 }

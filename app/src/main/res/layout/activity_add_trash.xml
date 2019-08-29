@@ -207,6 +207,8 @@
             android:elevation="8dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            android:clickable="true"
+            android:onClick="onAddNewLocationButtonClicked"
             android:text="Add Location"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimaryDark"
@@ -267,13 +269,14 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:text="Edit"
+                android:clickable="true"
+                android:onClick="onAddNewLocationButtonClicked"
                 android:textColor="@color/blue_600"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"  />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

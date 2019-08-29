@@ -1,5 +1,6 @@
 package com.ferguson.clean;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -7,19 +8,26 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -29,16 +37,29 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.ferguson.clean.utils.ConnectivityHelper;
+import com.ferguson.clean.Objects.GeoObj;
+import com.ferguson.clean.Objects.TrashObj;
 import com.ferguson.clean.utils.FirebaseUtil;
-import com.ferguson.clean.utils.TimeAgo;
 import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.FirebaseError;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -46,17 +67,21 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.rtchagas.pingplacepicker.PingPlacePicker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddTrash extends AppCompatActivity {
 
     public static final int REQUEST_CODE_FOR_MAP = 555;
+    private static final int PLACE_PICKER_REQUEST = 222;
     private AppCompatTextView txtLocation;
     private AppCompatButton btnAddImage;
     private AppCompatButton btnDone;
@@ -72,15 +97,13 @@ public class AddTrash extends AppCompatActivity {
     public static final String EXTRA_CIRCULAR_REVEAL_X = "EXTRA_CIRCULAR_REVEAL_X";
     public static final String EXTRA_CIRCULAR_REVEAL_Y = "EXTRA_CIRCULAR_REVEAL_Y";
     View rootLayout;
-    TrashObj trashObj;
-    GeoFire geoFire;
     private int revealX;
     private int revealY;
     private String bundleExtraLat;
     private String bundleExtraLong;
-
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
+    String path, placeName, firebaseUid;
+    Uri imgUri;
+    String file = "";
 
 
     @Override
@@ -89,13 +112,9 @@ public class AddTrash extends AppCompatActivity {
         setContentView(R.layout.activity_add_trash);
         initComponents();
 
-        mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
-        mDatabaseReference = FirebaseUtil.mDatabaseReference;
-
+        Places.initialize(getApplicationContext(), "AIzaSyDWui5aI24BwlUE-yyvZop6uAXXQJ0mvms");
 
         final Intent intent = getIntent();
-
-
 
         if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
                 intent.hasExtra(EXTRA_CIRCULAR_REVEAL_X) &&
@@ -104,7 +123,7 @@ public class AddTrash extends AppCompatActivity {
 
             revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
             revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
-
+            firebaseUid = intent.getStringExtra("FIREBASE_UID");
 
             ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
             if (viewTreeObserver.isAlive()) {
@@ -127,6 +146,8 @@ public class AddTrash extends AppCompatActivity {
         //Get permissions to access gallery, storage and camera
         requestMultiplePermissions();
 
+        statusCheck();
+
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,67 +166,11 @@ public class AddTrash extends AppCompatActivity {
                 unRevealActivity();
             }
         });
-        btnAddLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (ConnectivityHelper.isConnectedToNetwork(AddTrash.this)) {
-                    //Show the connected screen
-                    Intent intent  = MapsActivity.makeIntent(AddTrash.this);
-                    startActivityForResult(intent, REQUEST_CODE_FOR_MAP);
-                } else {
-                    //Show disconnected screen
-                    showNoInternetDialog();
-                }
-
-            }
-        });
-        txtEditLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent  = MapsActivity.makeIntent(AddTrash.this);
-                startActivityForResult(intent, REQUEST_CODE_FOR_MAP);
-            }
-        });
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Long tsLong = System.currentTimeMillis();
-//                Log.i("Current time :: ", tsLong.toString());
-//                String oldT = "1566316258891";
-//                long oldTime = Long.parseLong(oldT);
-//                String timeAgo = TimeAgo.timeAgo(oldTime);
-//                Log.i("Time Ago is :: ", timeAgo);
 
-//                saveTrashLocation(String.valueOf(oldTime),"userId", bundleExtraLat, bundleExtraLong);
-
-                FirebaseDatabase fdb = FirebaseDatabase.getInstance();
-                DatabaseReference dbref = fdb.getReference();
-
-
-//                dbref.child("trash").setValue(TrashObj.class);
-                geoFire = new GeoFire(dbref.child("geofire"));
-                geoFire.setLocation("firebase-hq", new GeoLocation(Double.parseDouble(bundleExtraLat), Double.parseDouble(bundleExtraLong)), new GeoFire.CompletionListener() {
-                    @Override
-                    public void onComplete(String key, DatabaseError error) {
-                        if (error != null) {
-                            System.err.println("There was an error saving the location to GeoFire: " + error);
-                        } else {
-                            System.out.println("Location saved on server successfully!");
-                        }
-                    }
-
-//                    @Override
-//                    public void onComplete(String key, FirebaseError error) {
-//                        if (error != null) {
-//                            System.err.println("There was an error saving the location to GeoFire: " + error);
-//                        } else {
-//                            System.out.println("Location saved on server successfully!");
-//                        }
-//                    }
-                });
-
-
+                storeTrashInformation();
             }
         });
 
@@ -223,6 +188,33 @@ public class AddTrash extends AppCompatActivity {
         txtComments = (TextInputEditText) findViewById(R.id.txt_comments);
         btnDone = (AppCompatButton) findViewById(R.id.btn_done);
         rootLayout = findViewById(R.id.root);
+    }
+    private int checkFineLocationPermission() {
+        return ActivityCompat.checkSelfPermission(AddTrash.this, Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    public void onAddNewLocationButtonClicked(View view) {
+        if (checkFineLocationPermission() != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.need_location_permission_message), Toast.LENGTH_LONG).show();
+            return;
+        }
+        Toast.makeText(this, getString(R.string.location_permissions_granted_message), Toast.LENGTH_LONG).show();
+
+        PingPlacePicker.IntentBuilder builder = new PingPlacePicker.IntentBuilder();
+        builder.setAndroidApiKey("AIzaSyDWui5aI24BwlUE-yyvZop6uAXXQJ0mvms")
+                .setMapsApiKey("AIzaSyDWui5aI24BwlUE-yyvZop6uAXXQJ0mvms");
+
+        // If you want to set a initial location rather then the current device location.
+        // NOTE: enable_nearby_search MUST be true.
+        // builder.setLatLng(new LatLng(37.4219999, -122.0862462))
+
+        try {
+            Intent placeIntent = builder.build(AddTrash.this);
+            startActivityForResult(placeIntent, PLACE_PICKER_REQUEST);
+        }
+        catch (Exception ex) {
+            // Google Play services is not available...
+        }
     }
 
     protected void revealActivity(int x, int y) {
@@ -309,34 +301,44 @@ public class AddTrash extends AppCompatActivity {
         if (resultCode == this.RESULT_CANCELED) {
             return;
         }
-
-
         if (requestCode == GALLERY) {
             if (data != null) {
-                Uri contentURI = data.getData();
+                imgUri = data.getData();
+                file = getRealPathFromURI(imgUri);
                 try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                    String path = saveImage(bitmap);
-                    Toast.makeText(AddTrash.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imgUri);
+                    path = saveImage(bitmap);
                     imgView.setImageBitmap(bitmap);
                     btnAddImage.setVisibility(View.GONE);
-
+                    Log.d("Gallery URI", imgUri.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(AddTrash.this, "Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
 
         } else if (requestCode == CAMERA) {
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            imgView.setImageBitmap(thumbnail);
-            saveImage(thumbnail);
-            Toast.makeText(AddTrash.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == REQUEST_CODE_FOR_MAP){
-            String placeName = data.getStringExtra("USER_PLACE_NAME");
-            bundleExtraLat = data.getStringExtra("USER_LOCATION_LAT");
-            bundleExtraLong = data.getStringExtra("USER_LOCATION_LONG");
-            txtLocation.setText(placeName);
+            if (data != null) {
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                imgUri = getImageUri(this, bitmap);
+                file = getRealPathFromURI(imgUri);
+                path = saveImage(bitmap);
+                    imgView.setImageBitmap(bitmap);
+                    btnAddImage.setVisibility(View.GONE);
+                    Log.d("Camera URI", imgUri.toString());
+            }
+        }
+
+
+
+        //handle request callback for places picker
+        else if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK){
+            Place place = PingPlacePicker.getPlace(data);
+            placeName = place.getName();
+
+            Toast.makeText(this, "You selected the place: " + place.getName(), Toast.LENGTH_SHORT).show();
+            bundleExtraLat = String.valueOf(place.getLatLng().latitude);
+            bundleExtraLong = String.valueOf(place.getLatLng().longitude);
+            txtLocation.setText(place.getName()+", "+place.getAddress());
             lytLocation.setVisibility(View.VISIBLE);
             btnAddLocation.setVisibility(View.GONE);
         }
@@ -376,6 +378,7 @@ public class AddTrash extends AppCompatActivity {
                 .withPermissions(
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
@@ -405,17 +408,6 @@ public class AddTrash extends AppCompatActivity {
                 .check();
     }
 
-    public void saveTrash(String timeStamp, String userId, String lat, String lng){
-//        trashObj.setUserId(userId);
-//        trashObj.setTimeStamp(timeStamp);
-//        trashObj.setImgUrl("something");
-//        trashObj.setLongLocation(lng);
-//        trashObj.setLatLocation(lat);
-//        trashObj.setTrashId("1TID");
-//        trashObj.setComment(txtComments.getText().toString());
-    }
-
-
     public void showNoInternetDialog() {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -430,5 +422,161 @@ public class AddTrash extends AppCompatActivity {
         dialog.show();
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        Bitmap OutImage = Bitmap.createScaledBitmap(inImage, 1000, 1000,true);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), OutImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        String path = "";
+        if (getContentResolver() != null) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+        return path;
+    }
+
+    public void storeTrashInformation(){
+
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        final StorageReference imageRef = storageReference.child("images/" + firebaseUid + "/" + imgUri.getLastPathSegment());
+        final FirebaseFirestore fdb = FirebaseFirestore.getInstance();
+        final DocumentReference newGeolocationRef =
+                fdb.collection("geo_locations")
+                        .document();
+
+        final DocumentReference newTrashRef =
+                fdb.collection("trashes")
+                        .document(newGeolocationRef.getId());
+
+        final TrashObj tb = new TrashObj();
+        final GeoPoint gl;
+        gl = new GeoPoint(Double.parseDouble(bundleExtraLat),Double.parseDouble(bundleExtraLong));
+        GeoObj gb = new GeoObj();
+        gb.setGl(gl);
+
+        final UploadTask uploadTask = imageRef.putFile(imgUri);
+        uploadTask
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()){
+                                    throw task.getException();
+                                }
+
+                                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Uri downloadUrl = uri;
+
+                                        tb.setImg_url(downloadUrl.toString());
+                                        tb.setUser_id(firebaseUid);
+                                        tb.setTrash_id(newTrashRef.getId());
+                                        tb.setComment(txtComments.getText().toString());
+                                        tb.setGeo_point_id(newGeolocationRef.getId());
+                                        tb.setPlace_name(placeName);
+                                        tb.setGl(gl);
+
+                                        newTrashRef
+                                                .set(tb)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(AddTrash.this, "Failed to add info", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                });
+
+//                                imgDownloadUrl = imageRef.getDownloadUrl().toString();
+
+                                newGeolocationRef
+                                        .set(gb)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(AddTrash.this, "Failed to add trash location", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                return imageRef.getDownloadUrl();
+                            }
+                        });
+
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                        if (task.isSuccessful()){
+                            Toast.makeText(AddTrash.this, "Successful", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+
+                    }
+                });
+    }
+
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, you have to enable it to continue?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
 }

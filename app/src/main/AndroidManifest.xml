@@ -22,19 +22,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyDWui5aI24BwlUE-yyvZop6uAXXQJ0mvms" />
 
-        <activity android:name=".Dashboard" />
+        <activity android:name=".Dashboard">
+
+        </activity>
         <activity android:name=".game.StartingScreenActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".game.QuizActivity"
@@ -46,12 +40,12 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
-
         </activity>
         <activity android:name=".TrashList" />
         <activity
             android:name=".AddTrash"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.NoActionBar">
+        </activity>
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

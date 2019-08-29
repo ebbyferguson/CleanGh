@@ -17,10 +17,12 @@
         android:clipToPadding="true"
         app:cardCornerRadius="4dp"
         app:cardElevation="2dp"
+        android:background="@color/icons"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
+            android:background="@color/icons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">

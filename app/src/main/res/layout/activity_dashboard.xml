@@ -441,7 +441,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Downloads"
+                                android:text="Trash Deed"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                                 android:textColor="@color/grey_40" />
 
@@ -613,8 +613,6 @@
                 android:layout_height="@dimen/spacing_middle" />
 
         </LinearLayout>
-
-
 
     </androidx.core.widget.NestedScrollView>
 
