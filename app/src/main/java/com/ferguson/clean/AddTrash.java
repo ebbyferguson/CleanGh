@@ -80,7 +80,6 @@ import java.util.Map;
 
 public class AddTrash extends AppCompatActivity {
 
-    public static final int REQUEST_CODE_FOR_MAP = 555;
     private static final int PLACE_PICKER_REQUEST = 222;
     private AppCompatTextView txtLocation;
     private AppCompatButton btnAddImage;
@@ -189,6 +188,7 @@ public class AddTrash extends AppCompatActivity {
         btnDone = (AppCompatButton) findViewById(R.id.btn_done);
         rootLayout = findViewById(R.id.root);
     }
+
     private int checkFineLocationPermission() {
         return ActivityCompat.checkSelfPermission(AddTrash.this, Manifest.permission.ACCESS_FINE_LOCATION);
     }
@@ -256,7 +256,6 @@ public class AddTrash extends AppCompatActivity {
         }
     }
 
-
     private void showPictureDialog(){
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
@@ -279,8 +278,6 @@ public class AddTrash extends AppCompatActivity {
                 });
         pictureDialog.show();
     }
-
-    //image, user_id, trash_id, comment, latitude, longitude, timestamp
 
     public void choosePhotoFromGallary() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
