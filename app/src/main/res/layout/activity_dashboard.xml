@@ -146,6 +146,7 @@
                         app:cardUseCompatPadding="false">
 
                         <LinearLayout
+                            android:id="@+id/lyt_locator"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"

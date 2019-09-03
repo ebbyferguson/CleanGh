@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ferguson.clean.Objects.TrashObj;
+import com.ferguson.clean.objects.TrashObj;
 import com.ferguson.clean.utils.TimeAgo;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;

@@ -1,4 +1,4 @@
-package com.ferguson.clean;
+package com.ferguson.clean.nulled;
 
 
 import android.Manifest;
@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.ferguson.clean.AddTrash;
+import com.ferguson.clean.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -39,7 +41,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivityNullified extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -195,7 +197,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     address += addressList.get(0).getCountryName();
                 }
 
-                Toast.makeText(MapsActivity.this, address, Toast.LENGTH_LONG).show();
+                Toast.makeText(MapsActivityNullified.this, address, Toast.LENGTH_LONG).show();
 
                 final Handler handler = new Handler();
                 final String finalAddress = address;
@@ -203,7 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void run() {
                         //Do something after 5000ms
-                        Intent intent = new Intent(MapsActivity.this, AddTrash.class);
+                        Intent intent = new Intent(MapsActivityNullified.this, AddTrash.class);
                         intent.putExtra("USER_LOCATION_LAT", latLng.latitude);
                         intent.putExtra("USER_LOCATION_LONG", latLng.longitude);
                         intent.putExtra("USER_PLACE_NAME", finalAddress);
@@ -224,7 +226,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public static Intent makeIntent(Context context){
-        return new Intent(context, MapsActivity.class);
+        return new Intent(context, MapsActivityNullified.class);
     }
 }
 

@@ -1,30 +1,18 @@
 package com.ferguson.clean.utils;
 
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.ferguson.clean.Dashboard;
-import com.ferguson.clean.Home;
-import com.ferguson.clean.Objects.TrashObj;
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.maps.model.Dash;
+import com.ferguson.clean.objects.TrashObj;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class FirebaseUtil {
 

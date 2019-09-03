@@ -1,7 +1,6 @@
 package com.ferguson.clean;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -11,17 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.ferguson.clean.locationPing.MapsActivity;
 import com.ferguson.clean.game.StartingScreenActivity;
-import com.ferguson.clean.utils.FirebaseUtil;
 import com.ferguson.clean.utils.Tools;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -34,11 +31,9 @@ public class Dashboard extends AppCompatActivity {
     private View lyt_parent;
     private LinearLayout lytPlasticWaste;
     private LinearLayout lytGame;
-    private Activity mContext;
+    private LinearLayout lytLocator;
     private static final int RC_SIGN_IN = 123;
     public static FirebaseFirestore mDB;
-    public static DocumentReference mDatabaseReference;
-    private static FirebaseUtil firebaseUtil;
     public static FirebaseAuth mFirebaseAuth;
     public static FirebaseStorage mFirebaseStorage;
     public static StorageReference mStorageReference;
@@ -89,6 +84,7 @@ public class Dashboard extends AppCompatActivity {
         lyt_parent = findViewById(R.id.lyt_parent);
         lytPlasticWaste = findViewById(R.id.lyt_plastic_waste);
         lytGame = findViewById(R.id.lyt_game);
+        lytLocator = findViewById(R.id.lyt_locator);
 
         lytPlasticWaste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +99,14 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, StartingScreenActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        lytLocator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, MapsActivity.class);
                 startActivity(intent);
             }
         });

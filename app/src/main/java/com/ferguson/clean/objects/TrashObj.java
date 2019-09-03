@@ -1,4 +1,4 @@
-package com.ferguson.clean.Objects;
+package com.ferguson.clean.objects;
 
 
 import com.google.firebase.database.IgnoreExtraProperties;
