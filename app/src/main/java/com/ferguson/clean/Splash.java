@@ -16,7 +16,7 @@ public class Splash extends AppCompatActivity {
 
 //    private RelativeLayout relativeLayout;
 //    private AnimationDrawable animationDrawable;
-    private static int SPLASH_TIME_OUT = 5000;
+    private static int SPLASH_TIME_OUT = 3000;
     private TextView txtAppName;
 
     @Override
@@ -32,6 +32,8 @@ public class Splash extends AppCompatActivity {
 
         txtAppName = findViewById(R.id.txtAppName);
 
+        runSplash();
+
         // init relativeLayout
 //        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
@@ -44,21 +46,46 @@ public class Splash extends AppCompatActivity {
         // setting exit fade animation duration to 2 seconds
 //        animationDrawable.setExitFadeDuration(500);
 
-        new Handler().postDelayed(new Runnable() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // This method will be executed once the timer is over
+//                Intent i = new Intent(Splash.this, Dashboard.class);
+//                Bundle b = null;
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    b = ActivityOptions.makeScaleUpAnimation(txtAppName, 0, 0, txtAppName.getWidth(),
+//                            txtAppName.getHeight()).toBundle();
+//                }
+//                startActivity(i, b);
+//                // close this activity
+//                finish();
+//            }
+//        }, SPLASH_TIME_OUT);
+    }
+
+    public void runSplash(){
+        Thread mThread = new Thread(){
             @Override
             public void run() {
-                // This method will be executed once the timer is over
-                Intent i = new Intent(Splash.this, Dashboard.class);
-                Bundle b = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    b = ActivityOptions.makeScaleUpAnimation(txtAppName, 0, 0, txtAppName.getWidth(),
-                            txtAppName.getHeight()).toBundle();
+                try {
+                    sleep(SPLASH_TIME_OUT);
+
+                    Intent i = new Intent(Splash.this, Dashboard.class);
+                    Bundle b = null;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        b = ActivityOptions.makeScaleUpAnimation(txtAppName, 0, 0, txtAppName.getWidth(),
+                                txtAppName.getHeight()).toBundle();
+                    }
+                    startActivity(i, b);
+                    // close this activity
+                    finish();
+                }catch (InterruptedException e){
+                    e.printStackTrace();
                 }
-                startActivity(i, b);
-                // close this activity
-                finish();
+                super.run();
             }
-        }, SPLASH_TIME_OUT);
+        };
+        mThread.start();
     }
 
    /* @Override

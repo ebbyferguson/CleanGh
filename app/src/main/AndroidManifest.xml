@@ -63,6 +63,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+        <activity android:name=".quiz.HomeScreen">
+        </activity>
+        <activity android:name=".quiz.PlayAgain" />
+        <activity android:name=".quiz.GameWon" />
+        <activity android:name=".quiz.Time_Up" />
+        <activity android:name=".quiz.MainGameActivity"/>
     </application>
 
 </manifest>

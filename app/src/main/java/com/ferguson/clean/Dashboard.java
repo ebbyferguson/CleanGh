@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.ferguson.clean.locationPing.MapsActivity;
 import com.ferguson.clean.game.StartingScreenActivity;
+import com.ferguson.clean.quiz.MainGameActivity;
 import com.ferguson.clean.utils.Tools;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -158,5 +159,10 @@ public class Dashboard extends AppCompatActivity {
 
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    public void openTrivia(View view) {
+        Intent intent = new Intent(Dashboard.this, MainGameActivity.class);
+        startActivity(intent);
     }
 }

@@ -2,6 +2,7 @@ package com.ferguson.clean.locationPing;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -13,11 +14,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+
 import com.google.android.gms.location.LocationListener;
+
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
 import com.ferguson.clean.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -103,20 +108,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void setUpLocation(){
+    private void setUpLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //Request runtime permission
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, MY_PERMISSION_REQUEST_CODE);
-        }
-        else
-        {
-            if (checkPlayServices())
-            {
+        } else {
+            if (checkPlayServices()) {
                 buildGoogleApiClient();
                 creatLocationRequest();
                 displayLocation();
@@ -126,12 +127,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
+        switch (requestCode) {
             case MY_PERMISSION_REQUEST_CODE:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    if (checkPlayServices())
-                    {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (checkPlayServices()) {
                         buildGoogleApiClient();
                         creatLocationRequest();
                         displayLocation();
@@ -144,13 +143,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void displayLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastKnownLocation != null)
-        {
+        if (mLastKnownLocation != null) {
             double latitude = mLastKnownLocation.getLatitude();
             double longitude = mLastKnownLocation.getLongitude();
 
@@ -163,19 +160,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (mCurrent != null)
                                 mCurrent.remove(); //remove old marker
                             mCurrent = mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(latitude, longitude))
-                                                .title("You"));
+                                    .position(new LatLng(latitude, longitude))
+                                    .title("You"));
                             //Move camera to this position
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12.0f));
                         }
                     });
 
 
-
-            Log.d("FERGUSON", String.format("Your location was changed: %f / %f",latitude, longitude));
-        }
-        else
-        {
+            Log.d("FERGUSON", String.format("Your location was changed: %f / %f", latitude, longitude));
+        } else {
             Log.d("FERGUSON", "Can not get your location");
         }
     }
@@ -199,12 +193,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS)
-        {
+        if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
-                    GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST_CODE).show();
-            else
-            {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST_CODE).show();
+            else {
                 Toast.makeText(this, "This device is not supported", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -222,9 +214,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
         //Create dangerous area
         LatLng dangerousArea = new LatLng(5.599547, -0.177979);
@@ -233,7 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             .radius(500)
             .strokeColor(R.color.blue_500)
             .fillColor(0x220000FF)
-            .strokeWidth(5.0f)
+            .strokeWidth(3.0f)
         );
 
         //Add GeoQuery here

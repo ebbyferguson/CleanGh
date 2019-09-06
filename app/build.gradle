@@ -66,6 +66,10 @@ dependencies {
     //GeoFirestore library
     implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.5.0'
 
+    //Quiz game button
+    implementation 'info.hoang8f:fbutton:1.0.5'
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'
