@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/backgroundColor"
+    android:background="@color/icons"
     tools:context="quiz.HomeScreen">
 <TextView
     android:id="@+id/tQ"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/app_name"
+    android:textColor="@color/grey_600"
+    android:fontFamily="cursive"
     android:gravity="center"
     android:textSize="100sp"/>
 <View
@@ -21,10 +23,11 @@
 <ImageView
     android:layout_width="400dp"
     android:layout_height="400dp"
-    android:src="@drawable/triviafinal"/>
+    android:src="@drawable/play_game"/>
 
     <info.hoang8f.widget.FButton
         android:id="@+id/playGame"
+        android:textColor="@color/icons"
         fbutton:buttonColor="@color/green_800"
         android:layout_width="500dp"
         android:text="@string/play_game"
@@ -38,6 +41,7 @@
 
     <info.hoang8f.widget.FButton
         android:id="@+id/quit"
+        android:textColor="@color/icons"
         fbutton:buttonColor="@color/green_800"
         android:layout_width="500dp"
         android:text="@string/quit"

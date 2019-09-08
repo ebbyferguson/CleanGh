@@ -3,7 +3,7 @@
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/icons"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/wrongans"
-        android:textColor="@color/icons"
+        android:textColor="@color/grey_600"
         android:textSize="40sp" />
     <ImageView
         android:layout_width="300dp"
@@ -26,6 +26,17 @@
         android:layout_height="60dp"
         android:layout_margin="15dp"
         android:text="@string/play_again"
+        android:textColor="@color/icons"
+        android:textSize="25sp"
+        fbutton:buttonColor="@color/green_600" />
+
+    <info.hoang8f.widget.FButton
+        android:id="@+id/quitButton"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:layout_margin="15dp"
+        android:text="@string/quit"
+        android:textColor="@color/icons"
         android:textSize="25sp"
         fbutton:buttonColor="@color/green_600" />
 </LinearLayout>

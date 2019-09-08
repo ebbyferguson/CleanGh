@@ -83,7 +83,7 @@ class TriviaQuizHelper extends SQLiteOpenHelper {
 
         arraylist.add(new TriviaQuestion("Which creatures are highly susceptible to plastic ingestion?", "Fish", "Mammals", "Reptiles", "Birds", "Birds"));
 
-        arraylist.add(new TriviaQuestion("What sea animal eat plastic bags because they mistake them for jellyfish?", "Sea horse", "Whales", "Turtles", "Fish", "Turtles"));
+        arraylist.add(new TriviaQuestion("What sea animal eats plastic bags because they mistake them for jellyfish?", "Sea horse", "Whales", "Turtles", "Fish", "Turtles"));
 
         arraylist.add(new TriviaQuestion("Global plastic production is currently growing by approximately __________every year.", "30%", "4%", "6%", "10%", "4%"));
 

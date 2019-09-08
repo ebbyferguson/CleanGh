@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/icons"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -31,8 +31,10 @@
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@id/coinImage"
                 android:gravity="center"
+                android:textColor="@color/icons"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textStyle="bold"
                 android:text=""
                 android:textSize="20sp" />
 
@@ -53,6 +55,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:textColor="@color/icons"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -108,7 +111,7 @@
             android:layout_margin="10dp"
             android:onClick="buttonA"
             android:text=""
-            android:textColor="@color/grey_800"></info.hoang8f.widget.FButton>
+            android:textColor="@color/icons"></info.hoang8f.widget.FButton>
 
         <info.hoang8f.widget.FButton
             android:id="@+id/buttonB"
@@ -117,7 +120,7 @@
             android:layout_margin="10dp"
             android:onClick="buttonB"
             android:text=""
-            android:textColor="@color/grey_800" />
+            android:textColor="@color/icons" />
 
 
         <info.hoang8f.widget.FButton
@@ -127,7 +130,7 @@
             android:layout_margin="10dp"
             android:onClick="buttonC"
             android:text=""
-            android:textColor="@color/grey_800" />
+            android:textColor="@color/icons" />
 
         <info.hoang8f.widget.FButton
             android:id="@+id/buttonD"
@@ -136,7 +139,7 @@
             android:layout_margin="10dp"
             android:onClick="buttonD"
             android:text=""
-            android:textColor="@color/grey_800" />
+            android:textColor="@color/icons" />
 
     </LinearLayout>
 

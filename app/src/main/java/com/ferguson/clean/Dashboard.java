@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.ferguson.clean.locationPing.MapsActivity;
-import com.ferguson.clean.game.StartingScreenActivity;
 import com.ferguson.clean.quiz.MainGameActivity;
 import com.ferguson.clean.utils.Tools;
 import com.firebase.ui.auth.AuthUI;
@@ -25,6 +24,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.util.Arrays;
 import java.util.List;
+
+import hotchemi.android.rate.AppRate;
 
 
 public class Dashboard extends AppCompatActivity {
@@ -39,7 +40,6 @@ public class Dashboard extends AppCompatActivity {
     public static FirebaseStorage mFirebaseStorage;
     public static StorageReference mStorageReference;
     public static FirebaseAuth.AuthStateListener mAuthStateListener;
-
 
 
     public Dashboard() {
@@ -68,6 +68,15 @@ public class Dashboard extends AppCompatActivity {
             }
         };
         connectStorage();
+
+        //Get user to rate app
+        AppRate.with(this)
+                .setInstallDays(1)
+                .setLaunchTimes(3)
+                .setRemindInterval(2)
+                .monitor();
+
+        AppRate.showRateDialogIfMeetsConditions(Dashboard.this);
     }
 
     private void initToolbar() {
@@ -99,7 +108,7 @@ public class Dashboard extends AppCompatActivity {
         lytGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, StartingScreenActivity.class);
+                Intent intent = new Intent(Dashboard.this, MainGameActivity.class);
                 startActivity(intent);
             }
         });
@@ -161,8 +170,4 @@ public class Dashboard extends AppCompatActivity {
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    public void openTrivia(View view) {
-        Intent intent = new Intent(Dashboard.this, MainGameActivity.class);
-        startActivity(intent);
-    }
 }

@@ -69,6 +69,9 @@ dependencies {
     //Quiz game button
     implementation 'info.hoang8f:fbutton:1.0.5'
 
+    //Android rating dialog
+    implementation 'com.github.hotchemi:android-rate:1.0.1'
+
 
 }
 

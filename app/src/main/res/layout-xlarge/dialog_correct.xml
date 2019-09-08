@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/icons"
     android:gravity="center">
     <View
         android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/correct"
+            android:textStyle="bold"
             android:textColor="@color/green_600"
             android:gravity="center"
             android:textSize="50sp"/>
@@ -33,6 +34,8 @@
         android:id="@+id/dialogNext"
         android:layout_width="500dp"
         android:layout_height="80dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
         android:textSize="35sp"
         android:text="@string/next"
         android:textColor="@color/icons"/>

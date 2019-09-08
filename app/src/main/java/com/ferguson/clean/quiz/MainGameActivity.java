@@ -317,10 +317,10 @@ public class MainGameActivity extends AppCompatActivity {
 
     //This method will make button color white again since our one button color was turned green
     public void resetColor() {
-        buttonA.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.icons));
-        buttonB.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.icons));
-        buttonC.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.icons));
-        buttonD.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.icons));
+        buttonA.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.blue_400));
+        buttonB.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.blue_400));
+        buttonC.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.blue_400));
+        buttonD.setButtonColor(ContextCompat.getColor(getApplicationContext(),R.color.blue_400));
     }
 
     //This method will disable all the option button

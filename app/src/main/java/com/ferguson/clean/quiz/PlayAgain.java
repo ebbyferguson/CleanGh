@@ -14,6 +14,7 @@ import com.ferguson.clean.R;
 public class PlayAgain extends Activity {
 
     Button playAgain;
+    Button quit;
     TextView wrongAnsText;
 
     @Override
@@ -22,6 +23,8 @@ public class PlayAgain extends Activity {
         setContentView(R.layout.play_again);
        //Initialize
         playAgain = (Button) findViewById(R.id.playAgainButton);
+        quit = (Button) findViewById(R.id.quitButton);
+
         wrongAnsText = (TextView)findViewById(R.id.wrongAns);
 
         //play again button onclick listener
@@ -34,9 +37,17 @@ public class PlayAgain extends Activity {
             }
         });
 
+        quit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         //Setting typefaces for textview and button - this will give stylish fonts on textview and button
         Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/PlayfairDisplay-Regular.ttf");
         playAgain.setTypeface(typeface);
+        quit.setTypeface(typeface);
         wrongAnsText.setTypeface(typeface);
     }
 

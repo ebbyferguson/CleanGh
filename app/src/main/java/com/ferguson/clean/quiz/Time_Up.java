@@ -14,6 +14,7 @@ import info.hoang8f.widget.FButton;
 
 public class Time_Up extends AppCompatActivity {
     FButton playAgainButton;
+    FButton quitButton;
     TextView timeUpText;
 
     @Override
@@ -22,6 +23,7 @@ public class Time_Up extends AppCompatActivity {
         setContentView(R.layout.activity_time__up);
         //Initialize
         playAgainButton = (FButton)findViewById(R.id.playAgainButton);
+        quitButton = (FButton)findViewById(R.id.quitButton);
         timeUpText = (TextView)findViewById(R.id.timeUpText);
 
         //play again button onclick listener
@@ -36,11 +38,20 @@ public class Time_Up extends AppCompatActivity {
             }
         });
 
+        //quit button onclick listener
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         //Setting typefaces for textview and button - this will give stylish fonts on textview and button
         Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/PlayfairDisplay-Regular.ttf");
         timeUpText.setTypeface(typeface);
         playAgainButton.setTypeface(typeface);
+        quitButton.setTypeface(typeface);
     }
 
     @Override
