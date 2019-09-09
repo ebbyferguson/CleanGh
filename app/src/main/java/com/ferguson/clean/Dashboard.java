@@ -1,7 +1,9 @@
 package com.ferguson.clean;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +43,7 @@ public class Dashboard extends AppCompatActivity {
     public static FirebaseStorage mFirebaseStorage;
     public static StorageReference mStorageReference;
     public static FirebaseAuth.AuthStateListener mAuthStateListener;
+    private TextView txtHighScore;
 
 
     public Dashboard() {
@@ -95,6 +99,7 @@ public class Dashboard extends AppCompatActivity {
         lytPlasticWaste = findViewById(R.id.lyt_plastic_waste);
         lytGame = findViewById(R.id.lyt_game);
         lytLocator = findViewById(R.id.lyt_locator);
+        txtHighScore = findViewById(R.id.txt_highscore);
 
         lytPlasticWaste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +115,7 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, MainGameActivity.class);
                 startActivity(intent);
+//                loadHighScore();
             }
         });
 
@@ -120,6 +126,8 @@ public class Dashboard extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        loadHighScore();
 
     }
 
@@ -169,5 +177,25 @@ public class Dashboard extends AppCompatActivity {
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
+
+    public void loadHighScore(){
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+".game",Context.MODE_PRIVATE);
+
+        int highScore = sharedPreferences.getInt("high_score",0);
+        txtHighScore.setText(Integer.toString(highScore));
+    }
+
+    @Override
+    protected void onRestart() {
+        loadHighScore();
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStart() {
+        loadHighScore();
+        super.onStart();
+    }
+
 
 }

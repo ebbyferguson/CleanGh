@@ -1,7 +1,9 @@
 package com.ferguson.clean.quiz;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.ferguson.clean.Dashboard;
 import com.ferguson.clean.R;
 
 import java.util.Collections;
@@ -30,6 +33,7 @@ public class MainGameActivity extends AppCompatActivity {
     int qid = 0;
     int timeValue = 20;
     int coinValue = 0;
+    int inHighScore;
     CountDownTimer countDownTimer;
     Typeface tb, sb;
 
@@ -138,7 +142,13 @@ public class MainGameActivity extends AppCompatActivity {
         //set the value of coin text
         coinText.setText(String.valueOf(coinValue));
         //Now since user has ans correct increment the coinvalue
-        coinValue++;
+        coinValue+=5;
+
+        loadHighScore();
+
+        if (coinValue>inHighScore){
+            saveGameScore(coinValue);
+        }
 
     }
 
@@ -339,5 +349,18 @@ public class MainGameActivity extends AppCompatActivity {
         buttonD.setEnabled(true);
     }
 
+    public void saveGameScore(int score){
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+".game",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt("high_score", score);
+        editor.apply();
+    }
+
+    public void loadHighScore(){
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName()+".game",Context.MODE_PRIVATE);
+
+        inHighScore = sharedPreferences.getInt("high_score",0);
+    }
 
 }
